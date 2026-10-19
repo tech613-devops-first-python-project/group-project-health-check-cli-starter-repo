@@ -73,10 +73,25 @@ def check_target(target: dict, timeout: float, threshold: int,
         has no disk figures. Is that target degraded, or is that your tool
         inventing a problem?
     """
-    # TODO
-    raise NotImplementedError("check_target() in healthcheck.py is not written yet")
+    
+    # Get the target's name from the configuration dictionary.
+    name = target.get("name")
 
+    # Get the target's host address, such as 127.0.0.1.
+    host = target.get("host")
 
+    # Get the target's port number, such as 8801.
+    port = target.get("port")
+
+    # Run the TCP check using the target's details and the timeout.
+    top_result = check_tcp(name, host, port, timeout)
+
+    # Store the TCP check result in a list.
+    results = [top_result]
+
+    # Return the list of results to the main program.
+    return results
+        
 
 def overall_exit_code(results: list[CheckResult]) -> int:
     """Turn the worst result into an exit code from the contract above.
