@@ -12,6 +12,7 @@ import socket
 import time
 
 from . import DOWN, OK, CheckResult
+import socket
 
 CHECK_NAME = "tcp"
 

@@ -14,15 +14,15 @@ none of these is a manager.
 
 **Git lead.** Creates the team repository, sets up branch protection, and is the
 first port of call when a merge goes wrong. Not the only person allowed to merge,
-just the person who has read the instructions twice.
+just the person who has read the instructions twice. *Oliver.*
 
 **Scrum Master.** Facilitates. Runs the stand-up, keeps the board honest, and
 protects the team's time. Facilitating is not deciding, and it is not doing
-everyone's admin.
+everyone's admin. *Jackson.*
 
 **Development lead.** Owns `healthcheck.py` and keeps an eye on how the pieces
 fit together, so that the HTTP check and the disk check agree on how the health
-response gets passed between them.
+response gets passed between them. *Nowres.*
 
 Everyone else is a developer, which is also what the three above are. Do not
 invent roles to fill seats.
@@ -49,7 +49,7 @@ Every check returns a `CheckResult`, defined in `checks/__init__.py`. That file
 is the agreement that lets you work apart and still fit together. Do not change
 its shape without telling the whole team.
 
-## Setting up the repository
+## Setting up the repository (Complete)
 
 The Git lead does this once, before anyone clones.
 
