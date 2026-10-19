@@ -43,8 +43,38 @@ def render_table(results: list[CheckResult]) -> str:
     Avoid colour codes: they turn into junk characters in some Windows
     terminals and in any file the output is saved to.
     """
-    # TODO
-    raise NotImplementedError("render_table() in report.py is not written yet")
+    # Define headers
+    headers = ("TARGET", "CHECK", "STATE", "DETAIL")
+
+    # Extract the list input and take only significant data
+    rows = [
+        (r.target, r.check, r.state, r.detail)
+        for r in results
+    ]
+
+    # Find the widest value in each column, including the header. This was LLM generated.
+    widths = [
+        max(len(str(value)) for value in column)
+        for column in zip(headers, *rows)
+    ] if rows else [len(header) for header in headers]
+
+    # Build the header and data rows.
+    lines = [
+        f"{headers[0]:<{widths[0]}}  "
+        f"{headers[1]:<{widths[1]}}  "
+        f"{headers[2]:<{widths[2]}}  "
+        f"{headers[3]}"
+    ]
+
+    for row in rows:
+        lines.append(
+            f"{row[0]:<{widths[0]}}  "
+            f"{row[1]:<{widths[1]}}  "
+            f"{row[2]:<{widths[2]}}  "
+            f"{row[3]}"
+        )
+
+    return "\n".join(lines)
 
 
 def summarise(results: list[CheckResult]) -> dict:
