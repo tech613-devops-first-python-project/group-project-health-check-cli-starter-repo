@@ -33,7 +33,6 @@ def worst_state(results: list[CheckResult]) -> str:
             pass
     return OK
 
-
 def render_table(results: list[CheckResult]) -> str:
     """Return a plain-text table of every check, one row per result. Core tier.
 
