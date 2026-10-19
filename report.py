@@ -79,7 +79,6 @@ def render_table(results: list[CheckResult]) -> str:
 
 def summarise(results: list[CheckResult]) -> dict:
     """Count results by state: {"OK": 7, "DEGRADED": 2, "DOWN": 3}. Core tier."""
-    # TODO
     summary = {"OK": 0, "DEGRADED": 0, "DOWN": 0}
     for item in results:
         if item.state == OK:
