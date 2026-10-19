@@ -8,6 +8,9 @@ healthcheck.py already calls it. Fill in the body.
 
 from __future__ import annotations
 
+import socket
+import time
+
 from . import DOWN, OK, CheckResult
 
 CHECK_NAME = "tcp"
@@ -43,4 +46,39 @@ def check_tcp(name: str, host: str, port: int, timeout: float) -> CheckResult:
     works. Then read fleet/node_broken.py.
     """
     # TODO
-    raise NotImplementedError("check_tcp() in checks/tcp.py is not written yet")
+    #raise NotImplementedError("check_tcp() in checks/tcp.py is not written yet")
+
+    start = time.perf_counter()
+
+    try:
+        with socket.create_connection((host, port), timeout=timeout):
+            pass
+
+        state = OK
+        detail = "Connection successful"
+
+    except socket.gaierror:
+        state = DOWN
+        detail = "Hostname could not be resolved"
+
+    except ConnectionRefusedError:
+        state = DOWN
+        detail = "Connection refused"
+
+    except TimeoutError:
+        state = DOWN
+        detail = "Connection timed out"
+
+    except OSError as exc:
+        state = DOWN
+        detail = str(exc)
+
+    latency_ms = (time.perf_counter() - start) * 1000
+
+    return CheckResult(
+        target=name,
+        check=CHECK_NAME,
+        state=state,
+        detail=detail,
+        latency_ms=latency_ms,
+    )
