@@ -24,8 +24,14 @@ def worst_state(results: list[CheckResult]) -> str:
     This one function decides your tool's exit code, so it is worth a test.
     Core tier.
     """
-    # TODO
-    raise NotImplementedError("worst_state() in report.py is not written yet")
+    for item in results:
+        if item.state == DOWN:
+            return DOWN
+        elif item.state == DEGRADED:
+            return DEGRADED
+        else:
+            pass
+    return OK
 
 
 def render_table(results: list[CheckResult]) -> str:
@@ -79,7 +85,6 @@ def render_table(results: list[CheckResult]) -> str:
 
 def summarise(results: list[CheckResult]) -> dict:
     """Count results by state: {"OK": 7, "DEGRADED": 2, "DOWN": 3}. Core tier."""
-    # TODO
     summary = {"OK": 0, "DEGRADED": 0, "DOWN": 0}
     for item in results:
         if item.state == OK:
