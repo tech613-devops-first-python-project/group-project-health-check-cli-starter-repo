@@ -22,18 +22,31 @@
 # Secrets do NOT live here. This file is committed to GitHub. The alert webhook
 # URL in the stretch tier goes in an environment variable instead.
 
+defaults:
+  timeout_seconds: 2.0
+  disk_threshold_percent: 85  
+
 targets:
   - name: fleet-node-01
-    host: 127.0.0.1
+    host: 127.0.0.1 # TCP check needs a host and port to connect to
+    port: 8801 
+    health_url: http://127.0.0.1:8801/health # HTTP check needs a health URL to request
 
   - name: fleet-node-02
     host: 127.0.0.1
+    port: 8802
+    health_url: http://127.0.0.1:8802/health
 
   - name: fleet-node-03
     host: 127.0.0.1
+    port: 8803
+    health_url: http://127.0.0.1:8803/health
+    
 
   - name: fleet-node-04
     host: 127.0.0.1
+    port: 8804
+    health_url: http://127.0.0.1:8804/health
 
   # Real internet targets. Extension tier and later only. Everything above works
   # with no internet connection at all, so leave these commented out until your
