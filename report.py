@@ -80,7 +80,15 @@ def render_table(results: list[CheckResult]) -> str:
 def summarise(results: list[CheckResult]) -> dict:
     """Count results by state: {"OK": 7, "DEGRADED": 2, "DOWN": 3}. Core tier."""
     # TODO
-    raise NotImplementedError("summarise() in report.py is not written yet")
+    summary = {"OK": 0, "DEGRADED": 0, "DOWN": 0}
+    for item in results:
+        if item.state == OK:
+            summary["OK"] += 1
+        if item.state == DEGRADED:
+            summary["DEGRADED"] += 1
+        if item.state == DOWN:
+            summary["DOWN"] += 1
+    return summary
 
 
 def write_json_report(results: list[CheckResult], path: Path) -> Path:
