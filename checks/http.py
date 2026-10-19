@@ -7,11 +7,13 @@ already calls it.
 """
 
 from __future__ import annotations
-
 from . import DEGRADED, DOWN, OK, CheckResult
 
-CHECK_NAME = "http"
+# Added imports
+import requests
+import time
 
+CHECK_NAME = "http"
 
 def check_http(name: str, url: str, timeout: float) -> CheckResult:
     """GET the health endpoint at url, and classify what came back.
@@ -45,4 +47,82 @@ def check_http(name: str, url: str, timeout: float) -> CheckResult:
     ones are, so the order of your except blocks matters again.
     """
     # TODO
+
+    # Get server response and time it
+    start = time.perf_counter()
+    result = requests.get(url, timeout=timeout)
+    end = time.perf_counter()
+
+    # Calculate latency
+    latencyMs = end - start * 1000
+
+    # Isolate response code
+    statusCode = result.status_code
+    statusString = f"HTTP: {statusCode}"
+
+    # Full body of the response
+    body = result.json()
+
+    if statusCode == 200:
+        detail = statusString+": Connected and healthy"
+        return CheckResult(
+            target = name,
+            check = CHECK_NAME,
+            state = OK,
+            detail = detail,
+            latency_ms = latencyMs,
+            extra= {"Full Response": body}
+        )
+
+    if statusCode // 100 == 2:
+        detail = statusString + ": Connected but unhealthy"
+        return CheckResult(
+            target = name,
+            check = CHECK_NAME,
+            state = DEGRADED,
+            detail = detail,
+            latency_ms = latencyMs,
+            extra= {"Full Response": body}
+        )
+
+    if statusCode // 100 == 3:
+        return CheckResult(
+            target = name,
+            check = CHECK_NAME,
+            state = DEGRADED,
+            detail = statusString,
+            latency_ms = latencyMs,
+            extra= {"Full Response": body}
+        )
+
+    if statusCode // 100 == 4:
+        return CheckResult(
+            target = name,
+            check = CHECK_NAME,
+            state = DEGRADED,
+            detail = statusString,
+            latency_ms = latencyMs,
+            extra= {"Full Response": body}
+        )
+
+    if statusCode // 100 == 2:
+        return CheckResult(
+            target = name,
+            check = CHECK_NAME,
+            state = DEGRADED,
+            detail = statusString,
+            latency_ms = latencyMs,
+            extra= {"Full Response": body}
+        )
+
+    if statusCode // 100 == 5:
+        return CheckResult(
+            target = name,
+            check = CHECK_NAME,
+            state = DEGRADED,
+            detail = statusString,
+            latency_ms = latency,
+            extra= {"Full Response": body}
+        )
+
     raise NotImplementedError("check_http() in checks/http.py is not written yet")
