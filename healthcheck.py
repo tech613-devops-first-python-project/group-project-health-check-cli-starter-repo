@@ -84,8 +84,13 @@ def overall_exit_code(results: list[CheckResult]) -> int:
     EXIT_DEGRADED or EXIT_DOWN.
     """
     # TODO
-    raise NotImplementedError(
-        "overall_exit_code() in healthcheck.py is not written yet")
+    worst = report.worst_state(results)
+    if worst == DOWN:
+        return EXIT_DOWN
+    elif worst == DEGRADED:
+        return EXIT_DEGRADED
+    else:
+        return EXIT_OK
 
 
 # --------------------------------------------------------------------------
