@@ -86,43 +86,47 @@ def check_http(name: str, url: str, timeout: float) -> CheckResult:
         )
 
     if statusCode // 100 == 3:
+        detail = statusString + ": Location has moved"
         return CheckResult(
             target = name,
             check = CHECK_NAME,
             state = DEGRADED,
-            detail = statusString,
+            detail = detail,
             latency_ms = latencyMs,
             extra= {"Full Response": body}
         )
 
     if statusCode // 100 == 4:
+        detail = statusString + ": Client Error"
         return CheckResult(
             target = name,
             check = CHECK_NAME,
-            state = DEGRADED,
-            detail = statusString,
-            latency_ms = latencyMs,
-            extra= {"Full Response": body}
-        )
-
-    if statusCode // 100 == 2:
-        return CheckResult(
-            target = name,
-            check = CHECK_NAME,
-            state = DEGRADED,
-            detail = statusString,
+            state = DOWN,
+            detail = detail,
             latency_ms = latencyMs,
             extra= {"Full Response": body}
         )
 
     if statusCode // 100 == 5:
+        detail = statusString + ": Server Error"
         return CheckResult(
             target = name,
             check = CHECK_NAME,
-            state = DEGRADED,
-            detail = statusString,
-            latency_ms = latency,
+            state = DOWN,
+            detail = detail,
+            latency_ms = latencyMs,
             extra= {"Full Response": body}
         )
 
-    raise NotImplementedError("check_http() in checks/http.py is not written yet")
+    detail = statusString
+    error = CheckResult(
+            target = name,
+            check = CHECK_NAME,
+            state = DOWN,
+            detail = detail,
+            latency_ms = latencyMs,
+            extra= {"Full Response": body}
+        )
+    raise NotImplementedError("Unexpected error code: "
+                              "The request to the server returned a status code that was not accounted for.",
+                              error)
